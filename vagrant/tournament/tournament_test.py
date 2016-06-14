@@ -5,7 +5,7 @@
 #
 # If you do add any of the extra credit options, be sure to add/modify these test cases
 # as appropriate to account for your module's added functionality.
-
+import random
 from tournament import *
 
 def testCount():
@@ -84,6 +84,7 @@ def testReportMatches():
     reportMatch(id1, id2)
     reportMatch(id3, id4)
     standings = playerStandings()
+
     for (i, n, w, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
@@ -118,6 +119,7 @@ def testPairings():
     registerPlayer("Princess Celestia")
     registerPlayer("Princess Luna")
     standings = playerStandings()
+
     [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
     pairings = swissPairings()
     if len(pairings) != 4:
@@ -140,16 +142,200 @@ def testPairings():
                           frozenset([id4, id8]), frozenset([id6, id8])
                           ])
     actual_pairs = set([frozenset([pid1, pid2]), frozenset([pid3, pid4]), frozenset([pid5, pid6]), frozenset([pid7, pid8])])
+    
     for pair in actual_pairs:
         if pair not in possible_pairs:
             raise ValueError(
                 "After one match, players with one win should be paired.")
     print "10. After one match, players with one win are properly paired."
 
+def detectRepeatedMatch(matches):
+    """
+    Test if matches are repeated in a tournament.
 
+    Args: matches. Detectes for each match in matches is repeated. 
+    """
+    repeated_match_found = False
+    for i in range(len(matches)):
+        match = matches[i]
+        reverse_match = (matches[i][1],matches[i][0])
+        for j in range(i+1,len(matches)):
+            if matches[j] == match or matches[j] == reverse_match:
+               repeated_match_found = True
+               break
+        if repeated_match_found:
+           break
+    return repeated_match_found
+
+def test15():
+    """
+    Test if
+    a) there is repeated match in a 15 player tournament
+    b) A player plays in each round.
+    c) Bye loses all its matches
+    Winner er selected randomly except in the case of Bye
+    """
+    deleteMatches()
+    deletePlayers()
+    players = ["Karpov",
+               "Fischer",
+               "Kasparov",
+               "Spassky",
+               "Smyslov",
+               "Keres",
+               "Petrosian",
+               "Tal",
+               "Korchnoi",
+               "Olafsson",
+               "Larsen",
+               "Geller",
+               "Glicoric",
+               "Botwinnik",
+               "Capablanca",
+               "Bye"]
+    for player in players:
+        registerPlayer(player)
+
+    n_rounds = 4
+    matches = []
+    for i in range(1,n_rounds+1):
+        pairings = swissPairings()
+        for pair in pairings:
+            if pair[1] == "Bye":
+               matches.append((pair[2], pair[0]))
+               reportMatch(pair[2], pair[0])
+            elif pair[3] == "Bye":  
+                 matches.append((pair[0], pair[2]))
+                 reportMatch(pair[0], pair[2])
+            else:
+                if random.random() < 0.5:
+                   matches.append((pair[0], pair[2]))
+                   reportMatch(pair[0], pair[2])
+                else:
+                    matches.append((pair[2], pair[0]))
+                    reportMatch(pair[2], pair[0])
+        
+    
+    if detectRepeatedMatch(matches):
+       raise ValueError(
+            "A match was repeated.")
+
+    standings = playerStandings()
+    for row in standings:
+        if row[3] != n_rounds:
+           raise ValueError(
+            "A player did not play in all rounds.")
+        if row[2] == "Bye" and row[3] !=0:
+           raise ValueError(
+            "Bye did not lose all matches.")
+
+    print "11. Swiss pairing works for 15 player tournament."
+
+def test32():
+    """
+    Test if
+    a) there is repeated match in a 32 player tournament
+    b) A player plays in each round.
+    c) Bye loses all its matches
+    Winner er selected randomly except in the case of Bye
+
+    """
+    deleteMatches()
+    deletePlayers()
+    players = [str(a) for a in range(32)]
+    for player in players:
+        registerPlayer(player)
+
+    n_rounds = 5
+    matches = []
+    for i in range(1,n_rounds+1):
+        pairings = swissPairings()
+        for pair in pairings:
+            if pair[1] == "Bye":
+               matches.append((pair[2], pair[0]))
+               reportMatch(pair[2], pair[0])
+            elif pair[3] == "Bye":  
+                 matches.append((pair[0], pair[2]))
+                 reportMatch(pair[0], pair[2])
+            else:
+                if random.random() < 0.5:
+                   matches.append((pair[0], pair[2]))
+                   reportMatch(pair[0], pair[2])
+                else:
+                    matches.append((pair[2], pair[0]))
+                    reportMatch(pair[2], pair[0])
+        
+    
+    if detectRepeatedMatch(matches):
+       raise ValueError(
+            "A match was repeated.")
+
+    standings = playerStandings()
+    for row in standings:
+        if row[3] != n_rounds:
+           raise ValueError(
+            "A player did not play in all rounds.")
+        if row[2] == "Bye" and row[3] !=0:
+           raise ValueError(
+            "Bye did not lose all matches.")
+
+    print "12. Swiss pairing works for 32 player tournament."
+def test64():
+    """
+    Test if
+    a) there is repeated match in a 64 player tournament
+    b) A player plays in each round.
+    c) Bye loses all its matches
+    Winner er selected randomly except in the case of Bye
+    """
+    deleteMatches()
+    deletePlayers()
+    players = [str(a) for a in range(64)]
+    for player in players:
+        registerPlayer(player)
+
+    n_rounds = 6
+    matches = []
+    for i in range(1,n_rounds+1):
+        pairings = swissPairings()
+        for pair in pairings:
+            if pair[1] == "Bye":
+               matches.append((pair[2], pair[0]))
+               reportMatch(pair[2], pair[0])
+            elif pair[3] == "Bye":  
+                 matches.append((pair[0], pair[2]))
+                 reportMatch(pair[0], pair[2])
+            else:
+                if random.random() < 0.5:
+                   matches.append((pair[0], pair[2]))
+                   reportMatch(pair[0], pair[2])
+                else:
+                    matches.append((pair[2], pair[0]))
+                    reportMatch(pair[2], pair[0])
+        
+    
+    if detectRepeatedMatch(matches):
+       raise ValueError(
+            "A match was repeated.")
+
+    standings = playerStandings()
+    for row in standings:
+        if row[3] != n_rounds:
+           raise ValueError(
+            "A player did not play in all rounds.")
+        if row[2] == "Bye" and row[3] !=0:
+           raise ValueError(
+            "Bye did not lose all matches.")
+
+    print "13. Swiss pairing works for 64 player tournament."
+     
+     
 if __name__ == '__main__':
     testCount()
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
+    test15()
+    test32()
+    test64()
     print "Success!  All tests pass!"
