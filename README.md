@@ -1,19 +1,19 @@
 rdb-fullstack
 =============
 
-7th of June 2016
+13th of June 2016
 
 #Tournament Results
 
-This is a project done by Unnar Thor Bachmann in the Udacity's full stack web developer nanodegree program. This is a database system which 
+This is a project done by Unnar Thor Bachmann in the Udacity's full stack web developer nanodegree program. This is a python module which implements a database system. The system keeps track of players and matches during a Swiss-system tournament were player can either win or lose a match. 
 
 ##Short explanation of functionality.
 
-This project was made using the [Google App Engine Python](https://cloud.google.com/appengine/docs/python/) as well as the template framwork [jinja2](http://jinja.pocoo.org/). I added [Bootstrap](http://getbootstrap.com/) to improve the front experience of the user. 
+This project was made using [PostgreSQL](https://www.postgresql.org/) and [python](https://www.python.org/) and is supposed to run on a linux sytem. Either a local machine or [virtual machine](https://www.virtualbox.org/wiki/Downloads) using a [vagrant](https://www.vagrantup.com/) software to configure it. The project itself is inside the folder `tournament`.
 
 ##How to run the webpage.
 
-1. [Download](https://cloud.google.com/appengine/downloads) the Google App Engine Python.
-2. Start the files in the zipped folder as a new project. 
-3. To run the project locally in your browser run the program using the App Engine and view it in the browser with the url localhost:<port>.
-4. To run the program online you must sign up for an [account](https://cloud.google.com/appengine/) and deploy the project.
+1. Fork the repository.
+2. Clone the repository to your machine by typing `git clone <url>.git` in the commmand line interface (e.g. Git bash). 
+3. If running the project on a virtual machine type `vagrant up` followed by `vagrant ssh`
+4. Navigate to `tournament` folder. Inside the folder there are three files: `tournament.py`, `tournament_test.py` and `tournament.sql`. Run the python files using the commands `python tournament_test.py` and `python tournament.py`. Open the `tournament.sql` file using the `psql` command.
