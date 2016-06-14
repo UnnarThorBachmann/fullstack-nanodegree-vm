@@ -14,6 +14,9 @@ This project was made using [PostgreSQL](https://www.postgresql.org/) and [pytho
 ##How to run the webpage.
 
 1. Fork the repository.
+
 2. Clone the repository to your machine by typing `git clone <url>.git` in the commmand line interface (e.g. Git bash). 
-3. If running the project on a virtual machine type `vagrant up` followed by `vagrant ssh`
+
+3. If running the project on a virtual machine type `vagrant up` followed by `vagrant ssh`.
+
 4. Navigate to `tournament` folder. Inside the folder there are three files: `tournament.py`, `tournament_test.py` and `tournament.sql`. Run the python files using the commands `python tournament_test.py` and `python tournament.py`. Open the `tournament.sql` file using the `psql` command.
