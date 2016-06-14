@@ -11,7 +11,17 @@ name text
 );
 
 CREATE TABLE match(
-id_winner integer,
-id_loser integer,
+id serial primary key,
+id_winner integer foreign key,
+id_loser integer foreign key
 );
 
+CREATE VIEW nr_matches_view AS
+  select player.id as ids, player.name as names, count(match.id_winner) as matches
+  from player left join match on (player.id=match.id_winner or player.id=match.id_loser)
+  group by player.id order by matches desc;
+    
+CREATE VIEW nr_wins_view AS
+  select player.id as ids, player.name as names, count(match.id_winner) as wins
+  from player left join match on (player.id=match.id_winner)
+  group by player.id order by wins desc;

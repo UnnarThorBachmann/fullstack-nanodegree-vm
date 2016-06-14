@@ -8,35 +8,34 @@ import psycopg2
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    conn = psycopg2.connect("dbname=tournament")
+    curr = conn.cursor()
+    return conn,curr
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    conn = connect()
-    curr = conn.cursor()
+    (conn,curr) = connect()
     curr.execute("DELETE FROM match;")
     conn.commit() 
     conn.close()
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    conn = connect()
-    curr = conn.cursor()
+    (conn,curr) = connect()
     curr.execute("DELETE FROM player;")
     conn.commit() 
     conn.close()
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    conn = connect()
-    curr = conn.cursor()
+    conn,curr = connect()
     curr.execute("SELECT count(player.id) FROM player;")
-    rows = curr.fetchall()
+    row = curr.fetchone()
     conn.commit() 
     conn.close()
-    if rows:
-       return int(rows[0][0])
+    if row:
+       return int(row[0])
     else:
         return 0
 
@@ -49,8 +48,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    conn = connect()
-    curr = conn.cursor()
+    conn,curr = connect()
     curr.execute("INSERT INTO player (name) values(%s);",(name,))
     conn.commit() 
     conn.close()
@@ -69,29 +67,13 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    conn = connect()
-    curr = conn.cursor()
-   
-    """
-    Views existing in the database:
-    
-    CREATE VIEW nr_matches_view AS
-    select player.id as ids, player.name as names, count(match.id_winner) as matches
-    from player left join match on (player.id=match.id_winner or player.id=match.id_loser)
-    group by player.id order by matches desc;
-    
-    CREATE VIEW nr_wins_view AS
-    select player.id as ids, player.name as names, count(match.id_winner) as wins
-    from player left join match on (player.id=match.id_winner)
-    group by player.id order by wins desc;
-    """
-    
-    s="""
-      SELECT nr_matches_view.ids, nr_matches_view.names, nr_matches_view.matches, nr_wins_view.wins
-      FROM (nr_matches_view join nr_wins_view on nr_wins_view.ids = nr_matches_view.ids)
-      ORDER BY nr_wins_view.wins DESC;
-      """
-    curr.execute(s)
+    conn,curr = connect()
+
+    curr.execute("""
+          SELECT nr_matches_view.ids, nr_matches_view.names, nr_matches_view.matches, nr_wins_view.wins
+          FROM (nr_matches_view join nr_wins_view on nr_wins_view.ids = nr_matches_view.ids)
+          ORDER BY nr_wins_view.wins DESC;
+    """)
     rows = curr.fetchall()
     l = []
     for row in rows:
@@ -107,8 +89,8 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    conn = connect()
-    curr = conn.cursor()
+    conn,curr = connect()
+
     curr.execute("INSERT INTO match(id_winner,id_loser) values(%s,%s);",(str(winner),str(loser)))
     conn.commit() 
     conn.close()
@@ -147,8 +129,8 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    conn = connect()
-    curr = conn.cursor()
+    conn,curr = connect()
+
     curr.execute("SELECT * from nr_wins_view")
     rows = curr.fetchall()
     
