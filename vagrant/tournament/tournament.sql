@@ -15,7 +15,7 @@ name text
 );
 
 CREATE TABLE match(
-id serial,
+id serial PRIMARY KEY,
 id_winner integer REFERENCES player (id),
 id_loser integer REFERENCES player (id)
 );
