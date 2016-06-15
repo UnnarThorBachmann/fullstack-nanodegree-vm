@@ -162,8 +162,10 @@ def detectRepeatedMatch(matches):
         for j in range(i+1,len(matches)):
             if matches[j] == match or matches[j] == reverse_match:
                repeated_match_found = True
+               print "Repeated match ", match
                break
         if repeated_match_found:
+         
            break
     return repeated_match_found
 
@@ -215,7 +217,6 @@ def test15():
                     matches.append((pair[2], pair[0]))
                     reportMatch(pair[2], pair[0])
         
-    
     if detectRepeatedMatch(matches):
        raise ValueError(
             "A match was repeated.")
@@ -265,7 +266,6 @@ def test32():
                     matches.append((pair[2], pair[0]))
                     reportMatch(pair[2], pair[0])
         
-    
     if detectRepeatedMatch(matches):
        raise ValueError(
             "A match was repeated.")

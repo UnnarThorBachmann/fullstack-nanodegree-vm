@@ -21,6 +21,9 @@ This project was made using [PostgreSQL](https://www.postgresql.org/) and [pytho
 
 4. Navigate to `tournament` folder. Inside the folder there are three files: `tournament.py`, `tournament_test.py` and `tournament.sql`. 
 
-5. Run the python files using the commands `python tournament_test.py` and `python tournament.py`. 
+5. Setup the database schema with `psql -f tournament.sql`.
 
-6. Open the `tournament.sql` file using the `psql` command.
+6. Run the program using the commands `python tournament_test.py`.
+
+
+

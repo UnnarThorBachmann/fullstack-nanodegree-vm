@@ -72,19 +72,13 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     conn,curr = connect()
-
     curr.execute("""
           SELECT nr_matches_view.ids, nr_matches_view.names, nr_matches_view.matches, nr_wins_view.wins
           FROM (nr_matches_view join nr_wins_view on nr_wins_view.ids = nr_matches_view.ids)
           ORDER BY nr_wins_view.wins DESC;
     """)
     rows = curr.fetchall()
-    l = []
-    for row in rows:
-        l.append((row[0],row[1],row[3],row[2]))
-    
-    return l
-
+    return [(row[0],row[1],row[3],row[2]) for row in rows]
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -110,12 +104,11 @@ def opponents_so_far(curr,player_id):
     curr.execute("SELECT * from match where id_winner=%s or id_loser =%s;" % (player_id,player_id))
     rows = curr.fetchall()
     ex_opponents = []
-    
     for ex_opponent in rows:
-        if int(player_id) == ex_opponent[0]:
-           ex_opponents.append(ex_opponent[1])
+        if int(player_id) == ex_opponent[1]:
+           ex_opponents.append(ex_opponent[2])
         else: 
-           ex_opponents.append(ex_opponent[0])
+           ex_opponents.append(ex_opponent[1])
     return set(ex_opponents)
 
 def swissPairings():
@@ -125,6 +118,11 @@ def swissPairings():
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
+
+    This is not particularly fast algorithm since I have fetch the ex_opponents set
+    from the database to draw players together. In my opinion a O(nm) algorithm were
+    n is the number of players and m is the number of matches. Could of course been
+    made faster by storing the matches but then I wanted to use the database.
   
     Returns:
       A list of tuples, each of which contains (id1, name1, id2, name2)
@@ -160,7 +158,7 @@ def swissPairings():
             # Find the next opponent which is not already matched and
             # not an ex opponent.
             for j in range(i+1,len(players)):
-                if not (is_matched[players[j]] or int(players[j]) in ex_opponents_set):
+                if (not is_matched[players[j]]) and  (not int(players[j]) in ex_opponents_set):
                    pairings.append((int(players[i]), players_names[players[i]],int(players[j]), players_names[players[j]]))
                    is_matched[players[i]] = True
                    is_matched[players[j]] = True
@@ -168,6 +166,5 @@ def swissPairings():
                 else:
                     pass
     conn.close()
-    
 
     return pairings
