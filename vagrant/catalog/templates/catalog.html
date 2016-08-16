@@ -1,0 +1,41 @@
+{%extends "base.html"%}
+{%block content%}
+
+    <div class="main panel panel-default" id='mainDiv'>
+      {% with messages = get_flashed_messages(category_filter=["success"]) %}
+     {%if messages%}
+     <div class="alert alert-success" role="alert">
+      {{messages[0]}}
+     </div>
+     {%endif%}
+     {%endwith%}
+      <div class="panel-body">
+        <div class = "categories">
+          <h2>Categories</h2>
+          <ul class="list-group">
+            {%for item in categories%}
+            <li class="list-group-item"><a class="mainAnchor" href="{{url_for('showCategory',categoryName=item.name)}}">{{item.name}}</a></li>
+            {%endfor%}
+          </ul>
+        </div>
+        <div class="items">
+          
+          <ul class="list-group">
+            {%if filterCategoryName == 'none'%}
+              <h2>Latest items</h2>
+              <button type="button" class="{{addButtonHide}} btn btn-default navbar-btn" id='addButton'>Add item</button>
+              {%for item in items%}
+               <li class="list-group-item"><a class="mainAnchor" href="{{url_for('showItem',itemName=item.name,categoryName=item.category.name)}}">{{item.name}} <span class="categories">({{item.category.name}})</span></a></li>
+              {%endfor%}
+            {%else%}
+              <h2>{{filterCategoryName}} items ({{n}})</h2>
+              {%for item in items%}
+               <li class="list-group-item"><a class="mainAnchor" href="{{url_for('showItem',itemName=item.name,categoryName=item.category.name)}}">{{item.name}}</a></li>
+              {%endfor%}
+            {%endif%}
+            
+          </ul>
+        </div>  
+      </div>
+    </div>
+{%endblock%}

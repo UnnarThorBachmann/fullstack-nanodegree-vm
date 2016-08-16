@@ -1,0 +1,34 @@
+<html>
+<body>
+<h1> Edit Menu Item </h1>
+
+<form action="{{url_for('editMenuItem',restaurant_id=restaurant_id,menu_id=menu_id)}}" method = 'POST'>
+
+<label>Name:</label>
+</br>
+
+<input type='text' size='30' name={{item.name}} value={{item.name}}>
+</br>
+
+<label>Description:</label></br>
+
+<input type='text' size='30' name={{item.description}} value={{item.description}}>
+</br>
+
+<label>Price in dollars:</label>
+</br>
+
+<input type='text' size='30' name={{item.price}} value={{item.price}}>
+</br>
+<label>Course</label></br>
+
+<input type="radio" name="course" value="Appetizer" {%if item.course=='Appetizer'%}checked{%endif%}>Appetizer</br>
+<input type="radio" name="course" value="Entree"{%if item.course=='Entree'%}checked{%endif%}>Entree</br>
+<input type="radio" name="course" value="Dessert"{%if item.course=='Dessert'%}checked{%endif%}>Dessert</br>
+<input type="radio" name="course" value="Beverage"{%if item.course=='Beverage'%}checked{%endif%}>Beverage</br>
+
+<a href="{{url_for('restaurantMenu', restaurant_id=restaurant_id)}}">Cancel</a>
+</form>
+
+</body>
+</html>
