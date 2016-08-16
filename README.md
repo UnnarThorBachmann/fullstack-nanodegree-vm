@@ -1,15 +1,15 @@
 rdb-fullstack
 =============
 
-13th of June 2016
+15th of August 2016
 
-#Tournament Results
+# Item Catalog
 
-This is a project done by Unnar Thor Bachmann in the Udacity's full stack web developer nanodegree program. This is a python module which implements a database system. The system keeps track of players and matches during a Swiss-system tournament were player can either win or lose a match. 
+This is a project done by Unnar Thor Bachmann in the Udacity's full stack web developer nanodegree program. This is an implementation of a CRUD backend system. Each user can create, update and delete his/her itemsand read all other items. 
 
 ##Short explanation of functionality.
 
-This project was made using [PostgreSQL](https://www.postgresql.org/) and [python](https://www.python.org/) and is supposed to run on a linux sytem. Either a local machine or [virtual machine](https://www.virtualbox.org/wiki/Downloads) using a [vagrant](https://www.vagrantup.com/) software to configure it. The project itself is inside the folder `tournament`.
+This project was made using [Flask](http://flask.pocoo.org/) and [sqlAlchemy](http://www.sqlalchemy.org/) and is supposed to run on a linux sytem. Either a local machine or [virtual machine](https://www.virtualbox.org/wiki/Downloads) using a [vagrant](https://www.vagrantup.com/) software to configure it. The project itself is inside the folder `catalog`.
 
 ##How to run the webpage.
 
@@ -19,11 +19,13 @@ This project was made using [PostgreSQL](https://www.postgresql.org/) and [pytho
 
 3. If running the project on a virtual machine type `vagrant up` followed by `vagrant ssh`.
 
-4. Navigate to `tournament` folder. Inside the folder there are three files: `tournament.py`, `tournament_test.py` and `tournament.sql`. 
+4. Remove the current database with the commands `rm *.db` and `rm *.pyc`.
 
-5. Setup the database schema with `psql -f tournament.sql`.
+5. Create a new database with the commands `python database_setup.py` and populate it with the command `python AddingToDatabase.py`.
 
-6. Run the program using the commands `python tournament_test.py`.
+6. Run the client with `python project_item_catalog.py`.
+
+7. Connect to it in a webbrowser using the url [http://localhost:8000/](http://localhost:8000/).
 
 
 
