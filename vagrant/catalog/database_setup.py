@@ -47,7 +47,7 @@ class Item(Base):
 
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
-    description = Column(String(250))
+    description = Column(String(500))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
     category_id = Column(Integer, ForeignKey('category.id'))
@@ -61,5 +61,5 @@ class Item(Base):
           'description': self.description,
           'contact': self.user.email
         }    
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgres://pljxvcklkximek:nd3uThYGXKPlQGG1-Vk82C0qlH@ec2-54-83-44-117.compute-1.amazonaws.com:5432/d8hs1l9tsus36l')
 Base.metadata.create_all(engine)

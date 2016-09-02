@@ -2,27 +2,28 @@
 {%block content%}
 <div class="jumbotron" id="loginPanel">
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <div class="panel panel-default" >
-    <div class="panel-heading" role="tab" id="headingFB">
-      <fb:login-button scope="public_profile,email" onlogin="connectServer();">
-      </fb:login-button>
-    </div>
-    <div id="errorFBLogin">
-    </div>
-  </div>
-  <div class="panel panel-default" >
-    <div class="panel-heading" role="tab" id="headingAmazon">
-      <a href="#" id="LoginWithAmazon">
+    <div class="panel panel-default" >
+      <div class="panel-heading" role="tab" id="headingFB">
+        <fb:login-button scope="public_profile,email" onlogin="connectServer();">
+        </fb:login-button>
+      </div>
+      <div id="errorFBLogin">
+      </div>
+    </div><!-- end of panel-default -->
+    <!--
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingAmazon">
+        <a href="#" id="LoginWithAmazon">
         <img border="0" alt="Login with Amazon"
           src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
           width="156" height="32" />
-      </a>
-    </div>
-    <div id="errorAmazonLogin">
-    </div>
-  </div>
-  <div class="panel panel-default" >
-    <div class="panel-heading" role="tab" id="headingGoogle">
+        </a>
+      </div>
+      <div id="errorAmazonLogin">
+      </div>
+    </div>end of panel-default -->
+    <div class="panel panel-default" >
+      <div class="panel-heading" role="tab" id="headingGoogle">
       <div id="signInButton">
         <span class="g-signin"
             data-scope="openid email"
@@ -35,13 +36,18 @@
         </span>
       </div>
       <div id="errorGLogin"></div>
-    </div>
-  </div>
-  </div>
+    </div><!-- end of panel-default -->
+    <!--
+    <div class="panel panel-default" >
+      <div class="panel-heading" role="tab" id="headingMicrosoft">
+         <div id="signin"></div>
+        <label id="info"></label>
+      </div>
+    </div>end of panel-default -->
+  </div><!-- end of panel-group -->
 </div>
-<div id="amazon-root"></div>
 <script type="text/javascript">
-
+/*
   document.getElementById('LoginWithAmazon').onclick = function() {
     options = {};
     options.scope = 'profile';
@@ -66,18 +72,7 @@
       });
     });
   };
-</script>
-<script type="text/javascript">
-  window.onAmazonLoginReady = function() {
-    amazon.Login.setClientId('amzn1.application-oa2-client.803be539b44c42e78d3753caf888a012');
-  };
-  (function(d) {
-    var a = d.createElement('script'); a.type = 'text/javascript';
-    a.async = true; a.id = 'amazon-login-sdk';
-    a.src = 'https://api-cdn.amazon.com/sdk/login1.js';
-    d.getElementById('amazon-root').appendChild(a);
-  })(document);
-
+*/
 </script>
 <script>
   function addProgressBar() {
@@ -139,8 +134,9 @@
 </script>
 <script>
 function signInCallback(authResult) {
-  addProgressBar();
   if (authResult['code']) {
+    addProgressBar();
+
     // Hide the sign-in button now that the user is authorized
     $('#signinButton').attr('style', 'display: none');
     // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
@@ -164,4 +160,43 @@ function signInCallback(authResult) {
   }//end of if
 }//end of signInCallback
 </script>
+
+<script>
+/*
+            WL.Event.subscribe("auth.login", onLogin);
+            WL.init({
+                client_id: "2d940955-cc9d-4c81-a1f4-f93d74754a33",
+                redirect_uri: "http://bokamarkadur.herokuapp.com/login",
+                scope: "wl.signin",
+                response_type: "token"
+            });
+            WL.ui({
+                name: "signin",
+                element: "signin"
+            });
+            function onLogin (session) {
+                console.log(session);
+                if (!session.error) {
+                    WL.api({
+                        path: "me",
+                        method: "GET"
+                    }).then(
+                        function (response) {
+                            console.log(response);
+                            document.getElementById("info").innerText =
+                                "Hello, " + response.first_name + " " + response.last_name + "!";
+                        },
+                        function (responseFailed) {
+                            document.getElementById("info").innerText =
+                                "Error calling API: " + responseFailed.error.message;
+                        }
+                    );
+                }
+                else {
+                    document.getElementById("info").innerText =
+                        "Error signing in: " + session.error_description;
+                }
+            }
+*/
+        </script>
 {%endblock%}

@@ -1,12 +1,11 @@
 {%extends "base.html"%}
 {%block content%}
 <div class="jumbotron" id='mainDiv'>
-  <h1>Delete Item</h1>
-  <p>Are you sure you want to delete item?</p>
-
+  <h1>Eyða færslu</h1>
+  <p>Viltu eyða færslunni?</p>
   <form action="{{url_for('deleteItem',itemName=itemName)}}" method="post">
     <div class="form-group">
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default">Já</button>
     </div>
   </form>
 </div>

@@ -1,30 +1,50 @@
 {%extends "base.html"%}
 {%block content%}
 <div class="jumbotron" id='mainDiv'>
-  <h1>Edit</h1>
-  <form action="{{url_for('editItem',itemName=item.name)}}" method="post">
+  <h1>Uppfæra</h1>
+  <form action="{{url_for('updateItem')}}" method="post">
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
     <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" name="name" value="{{item.name}}">
+      <label for="name">Nafn:</label>
+      {%if messages%}
+      <input type="text" class="form-control" name="name" value="{{messages[0]}}">
+      {%else%}
+      <input type="text" class="form-control" name="name" value="{{item.name}}">
+      {%endif%}
+      {%if messages%}
+      <div class="error">
+        {{messages[1]}}
+      </div>
+      {%endif%}
     </div>
     <div class="form-group">
-      <label class="medium" for="description">Description:</label>
+      <label class="medium" for="description">Lýsing:</label>
+      {%if messages%}
+      <textarea type="text" class="form-control" name="description">{{messages[2]}}</textarea>
+      {%else%}
       <textarea type="text" class="form-control" name="description">{{item.description}}</textarea>
+      {%endif%}
+      {%if messages%}
+      <div class="error">
+        {{messages[3]}}
+      </div>
+      {%endif%}
+    </div>
+    {%endwith%}
+    <div class="form-group">
+      <label for="category">Flokkur:</label>
+      <select class="form-control" name="category">
+        {%for category in categories%}
+        {%if category.name == item.category.name%}
+        <option value="{{category.name}}" selected>{{category.name}}</option>
+        {%else%}
+        <option value="{{category.name}}">{{category.name}}</option>
+        {%endif%}
+        {%endfor%}
+      </select>
     </div>
     <div class="form-group">
-      <label for="category">Category:</label>
-        <select class="form-control" name="category">
-           {%for category in categories%}
-             {%if category.name == item.category.name%}
-             <option value="{{category.name}}" selected>{{category.name}}</option>
-             {%else%}
-              <option value="{{category.name}}">{{category.name}}</option>
-             {%endif%}
-           {%endfor%}
-        </select>
-       </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default">Senda</button>
     </div>
   </form>
 </div>

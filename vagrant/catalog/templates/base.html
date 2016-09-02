@@ -2,194 +2,326 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
-  <title>Used Books for Sale</title>
+  <title>Bókamarkaður</title>
   <!-- Bootstrap 3 -->
   <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900|Fjalla+One' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
   </script>
-<script src="//apis.google.com/js/platform.js?onload=start"> </script>
-
+  <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+  <!--<script src="//js.live.net/v5.0/wl.js"></script>
+  <script>
+  var APP_CLIENT_ID = "2d940955-cc9d-4c81-a1f4-f93d74754a33";
+  var REDIRECT_URL = "https://bokamarkadur.herokuapp.com/login";
+  </script>-->
   <style type="text/css" media="screen">
     body {
-            background-color: lightgray;
-            color: #333d51;
+            background-color: #cccccc;
+            color: #000000;
             margin: 0%;
             padding: 0%;
             margin: 0%;
             font-family: 'Fjalla One', sans-serif;
             font-size: 16px;
-        }
-        h3 {
-          line-height: 200%;
-        }
-        h3,
-        h4,
-        h5,
-        h6,
-        {
-          color: #f4f3ea;
-        }
-       h1 {
-        color: white;
-       }
-       h2,p,label {
-        color: black;
-       }
-       button {
+    }
+
+    h2,p,label {
+        color: #000000;
+    }
+    span.glyphicon-book {
+      padding-left: 0%;
+      color: #ff6600;
+      font-size: 2.8em;
+    }
+    .list-group-item {
+        background-color: #cccccc;
+    }
+    h1.totalHeader {
+      padding-top: -10px;
+    }
+    .titleBok {
+      position: absolute;
+      bottom: 80px;
+      left: 210px;
+    }
+    button {
         margin-right: 8px;
         margin-left:8px;
-       }
-       a.hvitur {
-        color: white;
-       }
-       .error {
-        color: red;
-       }
+    }
+    a.hvitur {
+      color: white;
+    }
+    .error {
+      color: #ff6600;
+    }
 
-       .header-left {
-         display: inline-block; 
-         width: 40%;
-         padding-left: 5%;
-         margin-bottom: 50px;
-       }
-       .items {
-        float: right;
-        margin-right: 10%;
-       }
-       h1 a:link {
-        color:white; 
-        background-color:transparent; 
-        text-decoration:none;
-       }
-       h1 a:visited {
-        color: white; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       h1 a:hover {
-        color:white; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       h1 a:active {
-        color:white; 
-        background-color:transparent; 
-        text-decoration:none
-       }
-       a.mainAnchor:link {
-        color: red; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       a.mainAnchor:visited {
-        color: red; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       a.mainAnchor:hover {
-        color: red; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       a.mainAnchor:active {
-        color: red; 
-        background-color: transparent; 
-        text-decoration: none;
-       }
-       span.categories {
-        color: grey;
-        background-color: transparent;
-       }
-       span.date {
-        color: gray;
-        float: right;
-       }
-       .btn-navbar {
-        border: 5%;
-       }
-       .header-right {
-         display: inline-block; 
-         width: 50%;
-       }
-       .navbar-header {
-         width: 100%;
-         background-color: black;
-       }
-       .navbar-default {
-        background-image: none;
-        background-color: black;
-       }
-       .main {
-        margin-left: 10%;
-        margin-right: 10%;
-       }
-       .hidden {
-        display: none;
-       }
-       .btn-default {
-         color: white;
-         background-color: red;
-         background-image: none;
-         border-color: red;
-       }
-       .categories {
-        display: inline-block;
-        width: 40%;
-       }
-       .items {
-        display: inline-block;
-        width: 50%;
-        padding-left: 10%;
-       }
-       .withmargin {
-        margin-left: 10%;
-        margin-right: 10%;
-       }
-       .jumbotron {
-        margin-left: 10%;
-        margin-right: 10%;
-        background-color: white;
-       }
-       .links {
-        color: red;
-       }
-       .btn-group-vertical {
-        width: 60%;
-       }
-       @media screen and (max-width: 500px) {
+    .header-left {
+      display: inline-block; 
+      width: 50%;
+      padding-left: 5%;
+      margin-bottom: 50px;
+    }
 
+    .items {
+      float: right;
+      margin-right: 10%;
+    }
+
+    h1 a:link {
+      color: #ff6600; 
+      background-color:transparent; 
+      text-decoration:none;
+    }
+
+    h1 a:visited {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    h1 a:hover {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    h1 a:active {
+      color: #ff6600; 
+      background-color:transparent; 
+      text-decoration:none
+    }
+
+    a.mainAnchor:link {
+      color: #000000; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    a.mainAnchor:visited {
+      color: #000000; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    a.mainAnchor:hover {
+      color: #000000; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    a.mainAnchor:active {
+      color: #000000; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+
+    a.secondAnchor:link {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+      display: inline;
+
+    }
+
+    a.secondAnchor:visited {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    a.secondAnchor:hover {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+
+    a.secondAnchor:active {
+      color: #ff6600; 
+      background-color: transparent; 
+      text-decoration: none;
+    }
+    .label-default {
+      background-color: #000000;
+    }
+    small.categories {
+      color: #000000;
+      background-color: transparent;
+      display: inline;
+    }
+
+    span.date {
+      color: #000000;
+      float: right;
+    }
+       
+    .panel-default>.panel-heading {
+      background-color: white;
+      background-image: none;
+    }
+
+    .btn-navbar {
+      border: 5%;
+    }
+    
+    .header-right {
+      display: inline-block; 
+      width: 50%;
+    }
+       
+    .navbar-header {
+      width: 100%;
+      background-color: #000000;
+    }
+       
+    .panel-body {
+      background-color: white;
+    }
+
+    .navbar-default {
+      background-image: none;
+      background-color: #000000;
+    }
+      
+    .main {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+       
+    .hidden {
+      display: none;
+    }
+       
+    .btn-default {
+      color: white;
+      background-color: #ff6600;
+      background-image: none;
+      border-color: #ff6600;
+    }
+       
+    .categories {
+      display: inline-block;
+      width: 40%;
+    }
+    
+    .items {
+      display: inline-block;
+      width: 50%;
+      padding-left: 10%;
+    }
+       
+    .withmargin {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+     
+    .jumbotron {
+      margin-left: 10%;
+      margin-right: 10%;
+      background-color: white;
+    }
+    
+    .jumbotron h1 {
+      color: #000000;
+    }
+
+    .links {
+      color: #ff6600;
+    }
+       
+    .btn-group-vertical {
+      width: 60%;
+    }
+     
+    #flokkaTakki {
+      display: none;
+      margin-bottom: 15px;
+      margin-top: 30px;
+    }
+    
+    @media screen and (max-width: 775px) {
+      .items{
+        width: 90%;
+        float: left;
+        padding-left:5%;
       }
-    </style>
+      .titleBok {
+        position: absolute;
+        left: 180px;
+        bottom: 180px;
+      }
+      .categories{
+        width: 90%;
+        float: left;
+        padding-left:5%;
+      }
+       
+      .list-group-item {
+        display:inline-flex;
+        display: -webkit-box;
+      }
+
+      .mainAnchor {
+        padding-left: 5%;
+        padding-top: 5%;
+      }
+    }
+    @media screen and (max-width: 400px) {
+      .header-left {
+        width: 90%;
+        margin-bottom: 0px;
+      }
+      .titleBok {
+        position: static;
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
-  <body id="bodyDOM">
-
+<body id="bodyDOM">
   <nav class="navbar navbar-default" id="navBar">
-  <div class="container-fluid">
-    {%if pictureExists%}
-    <img src="{{picture}}" alt="me" style="width:100px;height:100px;"/>
-    {%endif%}
-    <div class="header-left">
-      <h1><a href = "/">Used Books for Sale</a></h1>
-    </div>
-    <form class="navbar-form navbar-right">
-      <button type="button" class="{{loginButtonHide}} btn btn-default navbar-btn" id="login">Log in
-      </button>
-      <button type="button" class="{{logoutButtonHide}} btn btn-default navbar-btn" id="logout">Log out
-      </button>
-    </form>
-  </div>
-  </nav>
+    <div class="container-fluid">
+      <div class="header-left">
 
+
+        <h1 class="totalHeader">
+          {%if pictureExists%}
+          <img src="{{picture}}" alt="me" style="width:100px;height:100px;"/>
+          {%else%}
+          <span class="glyphicon glyphicon-book"></span>
+          {%endif%}
+          <a class="titleBok" href = "/">Bókamarkaður</a>
+        </h1>
+      </div>
+      <form class="navbar-form navbar-right">
+        <button type="button" class="{{loginButtonHide}} btn btn-default navbar-btn" id="login">Innskráning
+        </button>
+        <button type="button" class="{{logoutButtonHide}} btn btn-default navbar-btn" id="logout">Útskráning
+        </button>
+      </form>
+    </div>
+  </nav>
   {% block content %}
 
-  {%endblock%} 
-  </body>
+  {%endblock%}
+  <div id="amazon-root"></div>
+</body>
+<script type="text/javascript">
+  window.onAmazonLoginReady = function() {
+    amazon.Login.setClientId('amzn1.application-oa2-client.803be539b44c42e78d3753caf888a012');
+  };
+  (function(d) {
+    var a = d.createElement('script'); a.type = 'text/javascript';
+    a.async = true; a.id = 'amazon-login-sdk';
+    a.src = 'https://api-cdn.amazon.com/sdk/login1.js';
+    d.getElementById('amazon-root').appendChild(a);
+  })(document);
+</script>
   <script  type="text/javascript">
-   var logInButton = document.getElementById('login');
+    var logInButton = document.getElementById('login');
     logInButton.addEventListener('click',function() {
       location.href = "{{url_for('showLogIn')}}";
     });
@@ -208,7 +340,7 @@
     subDiv.setAttribute('style','width:'+ randWait + '%;');
     subDiv.innerHTML = randWait + '%';
     progressDiv.appendChild(subDiv);
-    //document.getElementById("FBpanel").appendChild(progressDiv);
+
     document.getElementById("bodyDOM").insertBefore(progressDiv,document.getElementById("mainDiv"));
       location.href = "{{url_for('logOut')}}";
     });

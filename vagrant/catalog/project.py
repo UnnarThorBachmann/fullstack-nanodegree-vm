@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 """
 Author: Unnar Thor Bachmann.
 
@@ -24,18 +25,20 @@ import requests
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-#Creating the app flask.
-app = Flask(__name__)
-app.secret_key = '94A4QZCD4Q91YWGQ6PTH12YHTBELYR4A'
+
 
 
 #Connecting with a database.
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgres://pljxvcklkximek:nd3uThYGXKPlQGG1-Vk82C0qlH@ec2-54-83-44-117.compute-1.amazonaws.com:5432/d8hs1l9tsus36l')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
+#Creating the app flask.
+app = Flask(__name__)
+app.secret_key = 'CIYZ4IQUTEI8YTF7CQHSGCVP42V6FMIAs'
+app.debug = True
+#   app.run(host = '0.0.0.0', port = 5000)
 
 @app.route('/')
 @app.route('/catalog')
@@ -58,7 +61,6 @@ def showCatalog():
        items = queryItems.order_by(desc(Item.date)).slice(0,n).all()
        pictureExists=True
        picture = login_session['picture']
-       print picture
     else:
         addButtonHide = 'hidden'
         logoutButtonHide = 'hidden'
@@ -163,8 +165,76 @@ def showItem(itemName,categoryName):
         response.headers['Content-Type'] = 'application/json'
         return response
  
+@app.route('/update',methods=['POST'])
+def updateItem():
+    #The POST method.
+        
+    #The form is read.
+    itemName = request.form['name']
+    itemDescription = request.form['description']   
+    itemCategory = session.query(Category).filter_by(name=request.form['category']).first()
+    
+    if len(itemName)> 50:
+       flash(itemName,'error')
+       flash('Ekki lengri texta en 50 stafi.','error')
+    else:
+        flash(itemName,'error')
+        flash('','error')
+        
+    if len(itemDescription)> 250:
+       flash(itemDescription,'error')
+       flash('Ekki lengri texta en 250 stafi.','error')
+    else:
+        flash(itemDescription,'error')
+        flash('','error')
 
-@app.route('/catalog/<itemName>/edit', methods = ['POST','GET'])
+    if len(itemName) > 50 or len(itemDescription) > 250:
+       if login_session['postPhase'] == 'edit':
+          itemEdited = session.query(Item).filter_by(id=login_session['itemId']).first()
+          picture = login_session['picture']
+          return redirect(url_for('editItem',itemName=itemEdited.name))
+       else:
+           return redirect(url_for('newItem'))
+
+    #Item has to be selected by id. The name could have changed.
+    if login_session['postPhase'] == 'edit':
+       itemEdited = session.query(Item).filter_by(id=login_session['itemId']).first()
+    
+       # Returns error if the item does not exist or if current user is not
+       # the owner of it.
+       if itemEdited is None or itemEdited.user_id != login_session['id']:
+          response = make_response(json.dumps("File not found"), 404)
+          response.headers['Content-Type'] = 'application/json'
+          return response
+
+       # Item is updated
+       itemEdited.name=itemName
+       itemEdited.description = itemDescription
+       itemEdited.category = itemCategory
+       itemEdited.category_id = itemCategory.id
+       itemEdited.user = session.query(User).filter_by(email=login_session['email']).first()
+       itemEdited.user_id = int(login_session['id'])
+       itemEdited.date = date.today()
+    
+       # The database is updated.
+       session.add(itemEdited)
+       session.commit()
+       return redirect(url_for('showCatalog'))
+
+    else:
+        user = session.query(User).filter_by(email=login_session['email']).first()
+        newItem = Item(name=itemName,
+                       description = itemDescription,
+                       user_id = user.id,
+                       user = user,
+                       category = itemCategory,
+                       category_id = itemCategory.id,
+                       date=date.today())
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('showCatalog'))   
+                           
+@app.route('/catalog/<itemName>/edit', methods = ['GET'])
 def editItem(itemName):
     """
     This function is for editing an item.
@@ -175,75 +245,44 @@ def editItem(itemName):
     
     POST: Updates the item in the database and redirects to the main page.
     """
+    login_session['postPhase'] = 'edit'
+    categories = session.query(Category).all()
+    logoutButtonHide = ''
+    loginButtonHide = 'hidden'
+    pictureExists=True
 
-    if request.method == 'GET':
-       #The GET method.
-        
-       # The page is only rendered if there is a user logged in.
-       if login_session.has_key('username'):
-          logoutButtonHide = ''
-          loginButtonHide = 'hidden'
-          pictureExists=True
-          picture = login_session['picture']
-          categories = session.query(Category).all()
-          # Splitting the query do to length. The item is filtered
-          # with respect to name and the id of the current user.
-          query =  session.query(Item).filter(Item.name==itemName)
-          currentUser = session.query(User).filter_by(email = login_session['email']).first()
-          filterItem = query.filter(Item.user == currentUser).first()
+    # The page is only rendered if there is a user logged in.
+    if login_session.has_key('username'):
+       picture = login_session['picture']
 
-          #If the item does not exist the page is not rendered.
-          if filterItem is not None:          
-             categories = session.query(Category)
-             #The item id is put into the loggin session for editing.
-             login_session['itemId'] = int(filterItem.id)
-             return render_template('edit.html',
-                                    item=filterItem,
-                                    categories=categories,
-                                    logoutButtonHide=logoutButtonHide,
-                                    loginButtonHide=loginButtonHide,
-                                    pictureExists= pictureExists,
-                                    picture = picture)
-          else:
-              response = make_response(json.dumps("File not found"), 404)
-              response.headers['Content-Type'] = 'application/json'
-              return response
+       # Splitting the query do to length. The item is filtered
+       # with respect to name and the id of the current user.
+       query =  session.query(Item).filter(Item.name==itemName)
+       currentUser = session.query(User).filter_by(email = login_session['email']).first()
+       filterItem = query.filter(Item.user == currentUser).first()
+       #If the item does not exist the page is not rendered.
+       if filterItem is not None:          
+          categories = session.query(Category)
+          #The item id is put into the loggin session for editing.
+          login_session['itemId'] = int(filterItem.id)
+          return render_template('edit.html',
+                                 item=filterItem,
+                                 categories=categories,
+                                 logoutButtonHide=logoutButtonHide,
+                                 loginButtonHide=loginButtonHide,
+                                 pictureExists= pictureExists,
+                                 picture = picture)
        else:
-           return redirect(url_for('showLogIn',
-                           signup='false'))
-       
-    else:
-        #The POST method.
-        
-        #The form is read.
-        itemName = request.form['name']
-        itemDescription = request.form['description']   
-        itemCategory = session.query(Category).filter_by(name=request.form['category']).first()
-        #Item has to be selected by id. The name could have changed.
-        itemEdited = session.query(Item).filter_by(id=login_session['itemId']).first()
-        
-        # Returns error if the item does not exist or if current user is not
-        # the owner of it.
-        if itemEdited is None or itemEdited.user_id != login_session['id']:
            response = make_response(json.dumps("File not found"), 404)
            response.headers['Content-Type'] = 'application/json'
            return response
-
-        # Item is updated
-        itemEdited.name=itemName
-        itemEdited.description = itemDescription
-        itemEdited.category = itemCategory
-        itemEdited.category_id = itemCategory.id
-        itemEdited.user = session.query(User).filter_by(email=login_session['email']).first()
-        itemEdited.user_id = int(login_session['id'])
-        itemEdited.date = date.today()
+    else:
+        return redirect(url_for('showLogIn',
+                        signup='false'))
+       
         
-        # The database is updated.
-        session.add(itemEdited)
-        session.commit()
-        return redirect(url_for('showCatalog'))
         
-@app.route('/catalog/new', methods = ['POST','GET'])
+@app.route('/catalog/new', methods = ['GET'])
 def newItem():
     """
     This function is for createing a new item.
@@ -251,54 +290,30 @@ def newItem():
     GET: Renders the form for making a new item.
     POST: Creates a new item.
     """
+    login_session['postPhase'] = 'new'
+    # The GET method.
+   
+    # If user is not logged in the he is redirected
+    # to the log in page.
     
-    if request.method == 'GET':
-       # The GET method.
-       
-       # If user is not logged in the he is redirected
-       # to the log in page.
-       if login_session.has_key('username'):
-          logoutButtonHide = ''
-          loginButtonHide = 'hidden'
-          pictureExists=True
-          picture = login_session['picture']
-          categories = session.query(Category).all()
-          return render_template('newItem.html',
-                                 categories = categories,
-                                 logoutButtonHide=logoutButtonHide,
-                                 loginButtonHide=loginButtonHide,
-                                 pictureExists=pictureExists,
-                                 picture = picture)
-       else:
-           redirect(url_for('showLogIn',
-                            signup='false'))
-            
-       
+    if login_session.has_key('username'):
+       logoutButtonHide = ''
+       loginButtonHide = 'hidden'
+       pictureExists=True
+       picture = login_session['picture']
+       categories = session.query(Category).all()
+       return render_template('newItem.html',
+                             categories = categories,
+                             logoutButtonHide=logoutButtonHide,
+                             loginButtonHide=loginButtonHide,
+                             pictureExists=pictureExists,
+                             picture = picture)
     else:
-        #The POST method.
+       redirect(url_for('showLogIn',
+                        signup='false'))
         
-        #Reading the form.
-        itemName = request.form['name']
-        itemDescription = request.form['description']
-        itemCategory = request.form['category']
-
-        # Finding the user and the category of the item from database.
-        user = session.query(User).filter_by(email=login_session['email']).first()
-
-        category = session.query(Category).filter_by(name=itemCategory).first()
-
-        #Creating the user
-
-        newItem = Item(name=itemName,
-                       description = itemDescription,
-                       user_id = user.id,
-                       user = user,
-                       category = category,
-                       category_id = category.id,
-                       date=date.today())
-        session.add(newItem)
-        session.commit()
-        return redirect(url_for('showCatalog'))          
+       
+               
         
 
 @app.route('/catalog/<itemName>/delete', methods = ['POST','GET'])
@@ -410,15 +425,15 @@ def logOut():
         url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
         h = httplib2.Http()
         result = h.request(url, 'GET')[0]
-        if result['status'] != '200':
-           # For whatever reason, the given token was invalid.
-           response = make_response(
-            json.dumps('Failed to revoke token for given user.', 400))
-           response.headers['Content-Type'] = 'application/json'
-           return response
+        #if result['status'] != '200':
+        #   # For whatever reason, the given token was invalid.
+        #   response = make_response(
+        #    json.dumps('Failed to revoke token for given user.', 400))
+        #   response.headers['Content-Type'] = 'application/json'
+        #   return response
         
     login_session.clear()
-    flash('You have logged out','success')
+    flash('Bless!','success')
     return redirect(url_for('showCatalog'))
 
 @app.route('/item/<itemName>.json')
@@ -466,7 +481,6 @@ def fbLogIn():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-    print "access token received %s " % access_token
     #Reading the app id and secret from server file
     jsonSecret = json.loads(open('fb_client_secrets.json', 'r').read())
     app_id = jsonSecret['web']['app_id']
@@ -522,7 +536,7 @@ def success():
     This function is called when user is logged successfully in
     by Amazon, Google or Facebook.
     """
-    flash("Now logged in as %s" % login_session['username'],'success')
+    flash("Velkomin(n) %s!" % login_session['username'],'success')
     return redirect(url_for('showCatalog'))
     
 @app.route('/amazonlogin', methods=['POST'])
@@ -608,8 +622,6 @@ def gLogIn():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        print "Oauth object."
-        print  oauth_flow 
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -643,7 +655,6 @@ def gLogIn():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -691,9 +702,6 @@ def gLogIn():
     login_session['credentials'] = credentials.access_token
     
     
-    print "Finishing with gmail login."
     return 'ok'
 
-if __name__ == '__main__':
-   app.debug = True
-   app.run(host = '0.0.0.0', port = 8000)
+
